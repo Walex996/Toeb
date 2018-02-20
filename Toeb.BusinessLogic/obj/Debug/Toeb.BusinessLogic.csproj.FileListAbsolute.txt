@@ -1,0 +1,13 @@
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.BusinessLogic.dll
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.BusinessLogic.pdb
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.DataAccess.dll
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.Model.dll
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\EntityFramework.dll
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.DataAccess.pdb
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.DataAccess.dll.config
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.Model.pdb
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\bin\Debug\EntityFramework.xml
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.csprojResolveAssemblyReference.cache
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.dll
+C:\Users\Wale\Documents\Visual Studio 2013\Projects\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.pdb
