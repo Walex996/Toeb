@@ -25,7 +25,8 @@ namespace Toeb
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css", "~/Content/font-awesome.min.css", 
+                      "~/Content/bootstrap-grid.css", "~/Content/bootstrap-reboot.css"));
         }
     }
 }

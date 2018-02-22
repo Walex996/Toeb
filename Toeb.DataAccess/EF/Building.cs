@@ -23,11 +23,13 @@ namespace Toeb.DataAccess.EF
 
         public int EstateId { get; set; }
 
+        public int HouseNumber { get; set; }
+
         public int NumberOfFlat { get; set; }
 
-        public int NumberOfTenant { get; set; }
-
         public int StructureId { get; set; }
+
+        public int NumberOfTenant { get; set; }
 
         public virtual Estate Estate { get; set; }
 

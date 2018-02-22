@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetConnectionString>Data Source=.;Initial Catalog=Alabagbe;Persist Security Info=False;User ID=sa;Password=password1;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True</TargetConnectionString>
+    <TargetConnectionString>Data Source=.;Initial Catalog=Alabagbe;Persist Security Info=True;User ID=sa;Password=password1;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True</TargetConnectionString>
     <TargetDatabase>Alabagbe</TargetDatabase>
   </PropertyGroup>
 </Project>
