@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\StateService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Toeb.DataAccess\Toeb.DataAccess.csproj">
@@ -52,8 +53,6 @@
       <Name>Toeb.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

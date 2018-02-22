@@ -20,7 +20,7 @@ namespace Toeb.DataAccess.EF
 
         [Required]
         [StringLength(50)]
-        public string StateName { get; set; }
+        public string Name { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Estate> Estates { get; set; }

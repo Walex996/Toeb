@@ -3,59 +3,40 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Toeb Estate Management Services</title>
+    <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <link href="~/Content/style.css" rel="stylesheet" />
-    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 
 </head>
-<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
-<header class="app-header navbar">
-    <button class="navbar-toggler sidebar d-lg-none mr-auto" type="button">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="#"></a>
-    <button class="navbar-toggler sidebar d-md-down-none" type="button">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</header>
-<div class="container body-content">
-<div class="app-body">
-    <div class="sidebar">
-        <nav class="sidebar-nav">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-primary">NEW</span></a>
-                </li>
-
-            </ul>
-        </nav>
-        <button class="sidebar-minimizer brand-minimizer" type="button"></button>
-    </div>
-    
-    <main class="main">
-        <div class="container-fluid">
-            @RenderBody()
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
         </div>
-    </main>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
     </div>
 
-    <footer class="app-footer">
-        <span><a href="http://coreui.io">CoreUI</a> © 2018 creativeLabs.</span>
-        <span class="ml-auto">Powered by <a href="http://coreui.io">CoreUI</a></span>
-    </footer>
-</div>
-    <script src="~/Scripts/angular-animate.min.js"></script>
-    <script src="~/Scripts/angular-resource.min.js"></script>
-    <script src="~/Scripts/angular-route.min.js"></script>
-    <script src="~/Scripts/angular-sanitize.min.js"></script>
-    <script src="~/App_Scripts/ServiceChargeController.js"></script>
-    <script src="~/JS_Services/ServiceChargeServce.js"></script>
-    <script src="~/Scripts/angular.min.js"></script>
-    <script>
-        var app = angular.module("app", ["ngResource"]);
-    </script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

@@ -1,12 +1,12 @@
 ﻿/*
 	Target database:	Alabagbe (configurable)
 	Target instance:	(any)
-	Generated date:		2/21/2018 9:58:11 AM
-	Generated on:		DESKTOP-EDG7CLS
+	Generated date:		2/22/2018 2:33:51 PM
+	Generated on:		DESKTOP-QQA4ETB
 	Package version:	(undefined)
 	Migration version:	(n/a)
 	Baseline version:	(n/a)
-	ReadyRoll version:	1.16.18038.8301
+	ReadyRoll version:	1.14.9.4465
 	Migrations pending:	(variable)
 
 	IMPORTANT! "SQLCMD Mode" must be activated prior to execution (under the Query menu in SSMS).
@@ -44,7 +44,6 @@
 :on error exit -- Instructs SQLCMD to abort execution as soon as an erroneous batch is encountered
 
 :setvar PackageVersion "(undefined)"
-:setvar IsShadowDeployment 0
 
 GO
 :setvar IsSqlCmdEnabled "True"
@@ -97,9 +96,9 @@ SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
 
 PRINT '----- executing pre-deployment script "Pre-Deployment\01_Create_Database.sql" -----';
-GO
 
 ------------------------- BEGIN PRE-DEPLOYMENT SCRIPT: "Pre-Deployment\01_Create_Database.sql" ---------------------------
+GO
 IF (DB_ID(N'$(DatabaseName)') IS NULL)
 BEGIN
 	PRINT N'Creating $(DatabaseName)...';
@@ -112,9 +111,6 @@ END
 
 GO
 -------------------------- END PRE-DEPLOYMENT SCRIPT: "Pre-Deployment\01_Create_Database.sql" ----------------------------
-
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
 
 
 
@@ -189,7 +185,7 @@ IF (NOT EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID(N'[dbo].
         PRINT N'Creating extended properties';
         EXECUTE sp_addextendedproperty N'MS_Description', N'This table is required by ReadyRoll SQL Projects to keep track of which migrations have been executed during deployment. Please do not alter or remove this table from the database.', 'SCHEMA', N'dbo', 'TABLE', N'__MigrationLog', NULL, NULL;
         EXECUTE sp_addextendedproperty N'MS_Description', N'The executing user at the time of deployment (populated using the SYSTEM_USER function).', 'SCHEMA', N'dbo', 'TABLE', N'__MigrationLog', 'COLUMN', N'applied_by';
-        EXECUTE sp_addextendedproperty N'MS_Description', N'The date/time that the migration finished executing. This value is populated using the SYSDATETIME function.', 'SCHEMA', N'dbo', 'TABLE', N'__MigrationLog', 'COLUMN', N'complete_dt';
+        EXECUTE sp_addextendedproperty N'MS_Description', N'The date/time that the migration finished executing. This value is populated using the SYSDATETIME function in SQL Server 2008+ or by using GETDATE in SQL Server 2005.', 'SCHEMA', N'dbo', 'TABLE', N'__MigrationLog', 'COLUMN', N'complete_dt';
         EXECUTE sp_addextendedproperty N'MS_Description', N'This column contains a number of potential states:
 
 0 - Marked As Deployed: The migration was not executed.
@@ -248,26 +244,11 @@ IF (NOT EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID(N'[dbo].
   END
 
 GO
-IF (NOT EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID(N'[dbo].[__SchemaSnapshot]')))
-  BEGIN
-    CREATE TABLE [dbo].[__SchemaSnapshot] (
-      [Snapshot] VARBINARY (MAX),
-      [LastUpdateDate] DATETIME2 CONSTRAINT [__SchemaSnapshotDateDefault] DEFAULT SYSDATETIME());
-    IF OBJECT_ID(N'sp_addextendedproperty', 'P') IS NOT NULL
-      BEGIN
-        EXECUTE sp_addextendedproperty N'MS_Description', N'This table is used by ReadyRoll SQL Projects to store a snapshot of the schema at the time of the last deployment. Please do not alter or remove this table from the database.', 'SCHEMA', N'dbo', 'TABLE', N'__SchemaSnapshot', NULL, NULL;
-      END
-  END
-
-GO
-TRUNCATE TABLE [dbo].[__SchemaSnapshot];
-
-GO
 DECLARE @baselineRequired AS BIT;
 
 SET @baselineRequired = 0;
 
-IF (EXISTS (SELECT * FROM sys.objects AS o WHERE o.is_ms_shipped = 0 AND NOT (o.name LIKE '%__MigrationLog%' OR o.name LIKE '%__SchemaSnapshot%')) AND (SELECT count(*) FROM [dbo].[__MigrationLog]) = 0)
+IF (EXISTS (SELECT * FROM sys.objects AS o WHERE o.is_ms_shipped = 0 AND NOT o.name LIKE '%__MigrationLog%') AND (SELECT count(*) FROM [dbo].[__MigrationLog]) = 0)
   SET @baselineRequired = 1;
 
 IF @baselineRequired = 1
@@ -290,16 +271,14 @@ IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHE
 ***** EXECUTING MIGRATION "Migrations\0001_20180219-1314_Wale.sql", ID: {00cbb90b-7259-4cf5-baeb-c23950e28294} *****';
 
 GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
-  SET NOEXEC ON;
-
-GO
-EXECUTE ('
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
 PRINT N''Creating [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Estate]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -309,19 +288,23 @@ EXECUTE ('CREATE TABLE [dbo].[Estate]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Estate] on [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Estate] on [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [PK_Estate] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [PK_Estate] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Building]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -332,19 +315,23 @@ EXECUTE ('CREATE TABLE [dbo].[Building]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Building] on [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Building] on [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [PK_Building] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [PK_Building] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[User]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[User]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [FirstName] [nvarchar] (50) NOT NULL,
@@ -355,19 +342,23 @@ EXECUTE ('CREATE TABLE [dbo].[User]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_User] on [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_User] on [dbo].[User]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Complaint]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Complaint]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -380,19 +371,23 @@ EXECUTE ('CREATE TABLE [dbo].[Complaint]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Complaint] on [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Complaint] on [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [PK_Complaint] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [PK_Complaint] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Event]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Event]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -405,19 +400,23 @@ EXECUTE ('CREATE TABLE [dbo].[Event]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Event] on [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Event] on [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[ServiceCharge]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[ServiceCharge]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [Name] [nvarchar] (100) NOT NULL,
@@ -434,19 +433,23 @@ EXECUTE ('CREATE TABLE [dbo].[ServiceCharge]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_ServiceCharge] on [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_ServiceCharge] on [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [PK_ServiceCharge] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [PK_ServiceCharge] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Structure]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Structure]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Structure]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Structure]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [Type] [nvarchar] (50) NOT NULL,
@@ -455,19 +458,23 @@ EXECUTE ('CREATE TABLE [dbo].[Structure]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Structure] on [dbo].[Structure]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Structure] on [dbo].[Structure]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Structure] ADD CONSTRAINT [PK_Structure] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Structure] ADD CONSTRAINT [PK_Structure] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Subscription]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Subscription]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Subscription]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Subscription]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [Name] [nvarchar] (100) NOT NULL,
@@ -479,71 +486,79 @@ EXECUTE ('CREATE TABLE [dbo].[Subscription]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Subscription] on [dbo].[Subscription]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Subscription] on [dbo].[Subscription]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Subscription] ADD CONSTRAINT [PK_Subscription] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Subscription] ADD CONSTRAINT [PK_Subscription] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
-
-GO
-SET NOEXEC OFF;
-
-GO
-IF N'$(IsSqlCmdEnabled)' <> N'True'
-  SET NOEXEC ON;
 
 GO
 IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('00cbb90b-7259-4cf5-baeb-c23950e28294' AS UNIQUEIDENTIFIER))
@@ -571,108 +586,129 @@ IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHE
 ***** EXECUTING MIGRATION "Migrations\0002_20180220-1215_Wale.sql", ID: {22c9e783-7df4-4ef2-a562-29ca34962ce9} *****';
 
 GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
-  SET NOEXEC ON;
-
-GO
-EXECUTE ('
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
 PRINT N''Dropping foreign keys from [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [FK_Building_Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [FK_Building_Estate]
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [FK_Building_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [FK_Building_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] DROP CONSTRAINT [FK_Complaint_Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] DROP CONSTRAINT [FK_Complaint_Building]
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] DROP CONSTRAINT [FK_Complaint_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] DROP CONSTRAINT [FK_Complaint_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [FK_ServiceCharge_Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [FK_ServiceCharge_Building]
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [FK_ServiceCharge_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [FK_ServiceCharge_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] DROP CONSTRAINT [FK_Estate_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] DROP CONSTRAINT [FK_Estate_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping foreign keys from [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] DROP CONSTRAINT [FK_Event_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] DROP CONSTRAINT [FK_Event_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping constraints from [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping constraints from [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [PK_Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] DROP CONSTRAINT [PK_Building]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping constraints from [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping constraints from [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] DROP CONSTRAINT [PK_Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] DROP CONSTRAINT [PK_Estate]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping constraints from [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping constraints from [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] DROP CONSTRAINT [PK_Event]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] DROP CONSTRAINT [PK_Event]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping constraints from [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping constraints from [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [PK_ServiceCharge]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] DROP CONSTRAINT [PK_ServiceCharge]
 ');
 
 GO
-EXECUTE ('PRINT N''Dropping constraints from [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Dropping constraints from [dbo].[User]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[User] DROP CONSTRAINT [PK_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[User] DROP CONSTRAINT [PK_User]
 ');
 
 GO
-EXECUTE ('PRINT N''Rebuilding [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Rebuilding [dbo].[User]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_1_User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_1_User]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [FirstName] [nvarchar] (50) NOT NULL,
@@ -688,44 +724,56 @@ EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_1_User]
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_1_User] ON;
-
-GO
-EXECUTE ('INSERT INTO [dbo].[RG_Recovery_1_User]([Id], [FirstName], [LastName], [Role], [CreatedAt]) SELECT [Id], [FirstName], [LastName], [Role], [CreatedAt] FROM [dbo].[User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_1_User] ON
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_1_User] OFF;
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('INSERT INTO [dbo].[RG_Recovery_1_User]([Id], [FirstName], [LastName], [Role], [CreatedAt]) SELECT [Id], [FirstName], [LastName], [Role], [CreatedAt] FROM [dbo].[User]
+');
 
 GO
-EXECUTE ('DECLARE @idVal BIGINT
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_1_User] OFF
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DECLARE @idVal BIGINT
 SELECT @idVal = IDENT_CURRENT(N''[dbo].[User]'')
 IF @idVal IS NOT NULL
     DBCC CHECKIDENT(N''[dbo].[RG_Recovery_1_User]'', RESEED, @idVal)
 ');
 
 GO
-EXECUTE ('DROP TABLE [dbo].[User]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DROP TABLE [dbo].[User]
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_1_User]'', N''User'', N''OBJECT''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_1_User]'', N''User'', N''OBJECT''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_User] on [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_User] on [dbo].[User]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[AccountDetail]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[AccountDetail]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[AccountDetail]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[AccountDetail]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [AccountName] [nvarchar] (100) NOT NULL,
@@ -737,19 +785,23 @@ EXECUTE ('CREATE TABLE [dbo].[AccountDetail]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_AccountDetails] on [dbo].[AccountDetail]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_AccountDetails] on [dbo].[AccountDetail]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[AccountDetail] ADD CONSTRAINT [PK_AccountDetails] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[AccountDetail] ADD CONSTRAINT [PK_AccountDetails] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Rebuilding [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Rebuilding [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_2_Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_2_Estate]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -763,44 +815,56 @@ EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_2_Estate]
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_2_Estate] ON;
-
-GO
-EXECUTE ('INSERT INTO [dbo].[RG_Recovery_2_Estate]([Id], [UserId], [Name], [Address]) SELECT [Id], [UserId], [Name], [Location] FROM [dbo].[Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_2_Estate] ON
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_2_Estate] OFF;
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('INSERT INTO [dbo].[RG_Recovery_2_Estate]([Id], [UserId], [Name], [Address]) SELECT [Id], [UserId], [Name], [Location] FROM [dbo].[Estate]
+');
 
 GO
-EXECUTE ('DECLARE @idVal BIGINT
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_2_Estate] OFF
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DECLARE @idVal BIGINT
 SELECT @idVal = IDENT_CURRENT(N''[dbo].[Estate]'')
 IF @idVal IS NOT NULL
     DBCC CHECKIDENT(N''[dbo].[RG_Recovery_2_Estate]'', RESEED, @idVal)
 ');
 
 GO
-EXECUTE ('DROP TABLE [dbo].[Estate]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DROP TABLE [dbo].[Estate]
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_2_Estate]'', N''Estate'', N''OBJECT''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_2_Estate]'', N''Estate'', N''OBJECT''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Estate] on [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Estate] on [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [PK_Estate] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [PK_Estate] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Rebuilding [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Rebuilding [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_3_Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_3_Building]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -812,52 +876,66 @@ EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_3_Building]
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_3_Building] ON;
-
-GO
-EXECUTE ('INSERT INTO [dbo].[RG_Recovery_3_Building]([Id], [UserId], [EstateId], [NumberOfFlat], [NumberOfTenant]) SELECT [Id], [UserId], [EstateId], [NumberOfFlat], [NumberOfTenant] FROM [dbo].[Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_3_Building] ON
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_3_Building] OFF;
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('INSERT INTO [dbo].[RG_Recovery_3_Building]([Id], [UserId], [EstateId], [NumberOfFlat], [NumberOfTenant]) SELECT [Id], [UserId], [EstateId], [NumberOfFlat], [NumberOfTenant] FROM [dbo].[Building]
+');
 
 GO
-EXECUTE ('DECLARE @idVal BIGINT
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_3_Building] OFF
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DECLARE @idVal BIGINT
 SELECT @idVal = IDENT_CURRENT(N''[dbo].[Building]'')
 IF @idVal IS NOT NULL
     DBCC CHECKIDENT(N''[dbo].[RG_Recovery_3_Building]'', RESEED, @idVal)
 ');
 
 GO
-EXECUTE ('DROP TABLE [dbo].[Building]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DROP TABLE [dbo].[Building]
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_3_Building]'', N''Building'', N''OBJECT''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_3_Building]'', N''Building'', N''OBJECT''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Building] on [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Building] on [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [PK_Building] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [PK_Building] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Altering [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Altering [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[Complaint].[UserId]'', N''TenantId'', N''COLUMN''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[Complaint].[UserId]'', N''TenantId'', N''COLUMN''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[State]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[State]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[State]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[State]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [StateName] [nvarchar] (50) NOT NULL
@@ -865,19 +943,23 @@ EXECUTE ('CREATE TABLE [dbo].[State]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_State] on [dbo].[State]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_State] on [dbo].[State]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[State] ADD CONSTRAINT [PK_State] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[State] ADD CONSTRAINT [PK_State] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Rebuilding [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Rebuilding [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_4_Event]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_4_Event]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [UserId] [int] NOT NULL,
@@ -891,44 +973,56 @@ EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_4_Event]
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_4_Event] ON;
-
-GO
-EXECUTE ('INSERT INTO [dbo].[RG_Recovery_4_Event]([Id], [UserId], [EventName], [StartDate], [EndDate], [InviteType], [Occurence]) SELECT [Id], [UserId], [EventName], [StartDate], [EndDate], [InviteType], [Occurence] FROM [dbo].[Event]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_4_Event] ON
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_4_Event] OFF;
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('INSERT INTO [dbo].[RG_Recovery_4_Event]([Id], [UserId], [EventName], [StartDate], [EndDate], [InviteType], [Occurence]) SELECT [Id], [UserId], [EventName], [StartDate], [EndDate], [InviteType], [Occurence] FROM [dbo].[Event]
+');
 
 GO
-EXECUTE ('DECLARE @idVal BIGINT
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_4_Event] OFF
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DECLARE @idVal BIGINT
 SELECT @idVal = IDENT_CURRENT(N''[dbo].[Event]'')
 IF @idVal IS NOT NULL
     DBCC CHECKIDENT(N''[dbo].[RG_Recovery_4_Event]'', RESEED, @idVal)
 ');
 
 GO
-EXECUTE ('DROP TABLE [dbo].[Event]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DROP TABLE [dbo].[Event]
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_4_Event]'', N''Event'', N''OBJECT''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_4_Event]'', N''Event'', N''OBJECT''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Event] on [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Event] on [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Rebuilding [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Rebuilding [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_5_ServiceCharge]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_5_ServiceCharge]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [Name] [nvarchar] (100) NOT NULL,
@@ -945,44 +1039,56 @@ EXECUTE ('CREATE TABLE [dbo].[RG_Recovery_5_ServiceCharge]
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_5_ServiceCharge] ON;
-
-GO
-EXECUTE ('INSERT INTO [dbo].[RG_Recovery_5_ServiceCharge]([Id], [Name], [Amount], [IsCompulsory], [DateCreated], [TotalAmountPaid], [EstateOwnerId], [BuildingId], [AccountId]) SELECT [Id], [Name], [Amount], [IsCompulsory], [Date], [TotalAmountPaid], [UserId], [BuildingId], [AccountType] FROM [dbo].[ServiceCharge]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_5_ServiceCharge] ON
 ');
 
 GO
-SET IDENTITY_INSERT [dbo].[RG_Recovery_5_ServiceCharge] OFF;
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('INSERT INTO [dbo].[RG_Recovery_5_ServiceCharge]([Id], [Name], [Amount], [IsCompulsory], [DateCreated], [TotalAmountPaid], [EstateOwnerId], [BuildingId], [AccountId]) SELECT [Id], [Name], [Amount], [IsCompulsory], [Date], [TotalAmountPaid], [UserId], [BuildingId], [AccountType] FROM [dbo].[ServiceCharge]
+');
 
 GO
-EXECUTE ('DECLARE @idVal BIGINT
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('SET IDENTITY_INSERT [dbo].[RG_Recovery_5_ServiceCharge] OFF
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DECLARE @idVal BIGINT
 SELECT @idVal = IDENT_CURRENT(N''[dbo].[ServiceCharge]'')
 IF @idVal IS NOT NULL
     DBCC CHECKIDENT(N''[dbo].[RG_Recovery_5_ServiceCharge]'', RESEED, @idVal)
 ');
 
 GO
-EXECUTE ('DROP TABLE [dbo].[ServiceCharge]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('DROP TABLE [dbo].[ServiceCharge]
 ');
 
 GO
-EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_5_ServiceCharge]'', N''ServiceCharge'', N''OBJECT''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[RG_Recovery_5_ServiceCharge]'', N''ServiceCharge'', N''OBJECT''
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_ServiceCharge] on [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_ServiceCharge] on [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [PK_ServiceCharge] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [PK_ServiceCharge] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[Tenant]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[Tenant]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[Tenant]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[Tenant]
 (
 [UserId] [int] NOT NULL,
 [BuildingId] [int] NOT NULL,
@@ -991,19 +1097,23 @@ EXECUTE ('CREATE TABLE [dbo].[Tenant]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_Tenant] on [dbo].[Tenant]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_Tenant] on [dbo].[Tenant]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [PK_Tenant] PRIMARY KEY CLUSTERED  ([UserId])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [PK_Tenant] PRIMARY KEY CLUSTERED  ([UserId])
 ');
 
 GO
-EXECUTE ('PRINT N''Creating [dbo].[NextOfKin]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating [dbo].[NextOfKin]''
 ');
 
 GO
-EXECUTE ('CREATE TABLE [dbo].[NextOfKin]
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('CREATE TABLE [dbo].[NextOfKin]
 (
 [Id] [int] NOT NULL IDENTITY(1, 1),
 [FullName] [nvarchar] (100) NOT NULL,
@@ -1015,127 +1125,149 @@ EXECUTE ('CREATE TABLE [dbo].[NextOfKin]
 ');
 
 GO
-EXECUTE ('PRINT N''Creating primary key [PK_NextOfKin] on [dbo].[NextOfKin]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Creating primary key [PK_NextOfKin] on [dbo].[NextOfKin]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[NextOfKin] ADD CONSTRAINT [PK_NextOfKin] PRIMARY KEY CLUSTERED  ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[NextOfKin] ADD CONSTRAINT [PK_NextOfKin] PRIMARY KEY CLUSTERED  ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[ServiceCharge]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[ServiceCharge]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_AccountDetail] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[AccountDetail] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_AccountDetail] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[AccountDetail] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_User] FOREIGN KEY ([EstateOwnerId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD CONSTRAINT [FK_ServiceCharge_User] FOREIGN KEY ([EstateOwnerId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[AccountDetail]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[AccountDetail]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[AccountDetail] ADD CONSTRAINT [FK_AccountDetail_User] FOREIGN KEY ([EstateOwnerId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[AccountDetail] ADD CONSTRAINT [FK_AccountDetail_User] FOREIGN KEY ([EstateOwnerId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Building]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Building]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Structure] FOREIGN KEY ([StructureId]) REFERENCES [dbo].[Structure] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_Structure] FOREIGN KEY ([StructureId]) REFERENCES [dbo].[Structure] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD CONSTRAINT [FK_Building_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Complaint]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Complaint]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_User] FOREIGN KEY ([TenantId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Complaint] ADD CONSTRAINT [FK_Complaint_User] FOREIGN KEY ([TenantId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Tenant]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Tenant]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_Building] FOREIGN KEY ([BuildingId]) REFERENCES [dbo].[Building] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [FK_Tenant_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Estate]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Estate]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_State] FOREIGN KEY ([StateId]) REFERENCES [dbo].[State] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_State] FOREIGN KEY ([StateId]) REFERENCES [dbo].[State] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_Subscription] FOREIGN KEY ([SubscriptionId]) REFERENCES [dbo].[Subscription] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_Subscription] FOREIGN KEY ([SubscriptionId]) REFERENCES [dbo].[Subscription] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Estate] ADD CONSTRAINT [FK_Estate_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Event]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[Event]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_Estate] FOREIGN KEY ([EstateId]) REFERENCES [dbo].[Estate] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Event] ADD CONSTRAINT [FK_Event_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
 ');
 
 GO
-EXECUTE ('PRINT N''Adding foreign keys to [dbo].[User]''
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('PRINT N''Adding foreign keys to [dbo].[User]''
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [FK_User_NextOfKin] FOREIGN KEY ([NextOfKinId]) REFERENCES [dbo].[NextOfKin] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [FK_User_NextOfKin] FOREIGN KEY ([NextOfKinId]) REFERENCES [dbo].[NextOfKin] ([Id])
 ');
 
 GO
-EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [FK_User_State] FOREIGN KEY ([StateOfOriginId]) REFERENCES [dbo].[State] ([Id])
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[User] ADD CONSTRAINT [FK_User_State] FOREIGN KEY ([StateOfOriginId]) REFERENCES [dbo].[State] ([Id])
 ');
-
-GO
-SET NOEXEC OFF;
-
-GO
-IF N'$(IsSqlCmdEnabled)' <> N'True'
-  SET NOEXEC ON;
 
 GO
 IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
@@ -1146,6 +1278,42 @@ GO
 IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER))
   INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
   VALUES                                         (CAST ('22c9e783-7df4-4ef2-a562-29ca34962ce9' AS UNIQUEIDENTIFIER), '06D4222A616EEDB63B97D970E75CB276D63B5E1634DEEFB493A587B5622D7890', '0002_20180220-1215_Wale.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
+
+GO
+SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
+
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
+GO
+IF DB_NAME() != '$(DatabaseName)'
+  USE [$(DatabaseName)];
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
+  PRINT '
+
+***** EXECUTING MIGRATION "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql", ID: {39a58db0-57ee-4dcc-b8b0-f02518892285} *****';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
+PRINT N''Altering [dbo].[State]''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[State].[StateName]'', N''Name'', N''COLUMN''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
+  PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql", ID: {39a58db0-57ee-4dcc-b8b0-f02518892285} *****
+';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
+  INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
+  VALUES                                         (CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER), '69EA38846A50FA71071C6A9AABE9FCCEFFBB5411C0655372A660DC62045432AE', '0003_20180222-1101_SilverEdgeProjects-O.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
 
 GO
 PRINT '# Committing transaction';
@@ -1164,15 +1332,17 @@ GO
 ------------------------------------------       POST-DEPLOYMENT SCRIPTS      ------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
+
 SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
 IF DB_NAME() != '$(DatabaseName)'
     USE [$(DatabaseName)];
 
 PRINT '----- executing post-deployment script "Post-Deployment\01_Finalize_Deployment.sql" -----';
-GO
 
 ---------------------- BEGIN POST-DEPLOYMENT SCRIPT: "Post-Deployment\01_Finalize_Deployment.sql" ------------------------
+GO
 /*
 Post-Deployment Script Template
 --------------------------------------------------------------------------------------
@@ -1188,21 +1358,8 @@ Post-Deployment Script Template
 GO
 ----------------------- END POST-DEPLOYMENT SCRIPT: "Post-Deployment\01_Finalize_Deployment.sql" -------------------------
 
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-IF DB_NAME() != '$(DatabaseName)'
-    USE [$(DatabaseName)];
 
-
-IF SERVERPROPERTY('EngineEdition') != 5 AND HAS_PERMS_BY_NAME(N'sys.xp_logevent', N'OBJECT', N'EXECUTE') = 1
-BEGIN
-  DECLARE @databaseName AS nvarchar(2048), @eventMessage AS nvarchar(2048)
-  SET @databaseName = REPLACE(REPLACE(DB_NAME(), N'\', N'\\'), N'"', N'\"')
-  SET @eventMessage = N'Redgate ReadyRoll: { "deployment": { "description": "ReadyRoll deployed $(ReleaseVersion) to ' + @databaseName + N'", "database": "' + @databaseName + N'" }}'
-  EXECUTE sys.xp_logevent 55000, @eventMessage
-END
 PRINT 'Deployment completed successfully.'
-GO
 
 
 

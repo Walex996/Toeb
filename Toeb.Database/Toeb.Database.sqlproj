@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -34,6 +34,10 @@
     <PackageScriptBatchExecutionStrategy>WrapInExecuteWithSingleSetNoExec</PackageScriptBatchExecutionStrategy>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DeployChangesForProgrammableObjects>False</DeployChangesForProgrammableObjects>
+    <ExcludeObjectsFromSync />
+    <IncludeObjectsInDataSync />
+    <DeployChangesInitialImportDone>False</DeployChangesInitialImportDone>
+    <DeployChangesExecutionOrder />
   </PropertyGroup>
   <!-- READYROLL OFFLINE SCHEMA MODEL OPTIONS -->
   <!-- READYROLL PROGRAMMABLE OBJECT OPTIONS -->
@@ -201,6 +205,6 @@
     <None Include="Migrations\0002_20180220-1215_Wale.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Migrations\0003_20180222-1009_Timothy-A.-Adekunle.sql" />
+    <None Include="Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" />
   </ItemGroup>
 </Project>
