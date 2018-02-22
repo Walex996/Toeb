@@ -1,26 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Toeb.DataAccess.EF;
+using Toeb.Model.ViewModels;
 
 namespace Toeb.DataAccess.Repositories
 {
     public interface IServiceChargeRepository
     {
-        IQueryable<ServiceCharge> GetServiceCharges();
+        IEnumerable<ServiceChargeModel> GetServiceCharges();
         ServiceCharge GetServiceCharge(int id);
-        ServiceCharge CreateServiceCharge(ServiceCharge serviceCharge);
+        ServiceCharge CreateServiceCharge(ServiceChargeModel model);
         void DeleteServiceCharge(int id);
-        void UpdateServiceCharge(int id, ServiceCharge serviceCharge);
+        void UpdateServiceCharge(int id, ServiceChargeModel model);
     }
     public class ServiceChargeRepository : IServiceChargeRepository
     {
-        private ToebEntities _toebEntities;
-        public IQueryable<ServiceCharge> GetServiceCharges()
+        ToebEntities _toebEntities = new ToebEntities();
+        public IEnumerable<ServiceChargeModel> GetServiceCharges()
         {
             try
             {
-                return _toebEntities.ServiceCharges;
+                var serviceCharges = new List<ServiceChargeModel>();
+                foreach (var serviceCharge in _toebEntities.ServiceCharges.ToList())
+                {
+                    serviceCharges.Add(new ServiceChargeModel()
+                    {
+                        Id = serviceCharge.Id,
+                        Name = serviceCharge.Name,
+                        Amount = serviceCharge.Amount,
+                        DueMonth = serviceCharge.DueMonth,
+                        DueDay = serviceCharge.DueDay,
+                        TotalAmountPaid = serviceCharge.TotalAmountPaid,
+                        IsCompulsory = serviceCharge.IsCompulsory
+                    });
+                }
+
+                return serviceCharges;
             }
             catch (Exception e)
             {
@@ -40,10 +57,19 @@ namespace Toeb.DataAccess.Repositories
             }
         }
 
-        public ServiceCharge CreateServiceCharge(ServiceCharge serviceCharge)
+        public ServiceCharge CreateServiceCharge(ServiceChargeModel model)
         {
             try
             {
+                var serviceCharge = new ServiceCharge
+                {
+                    Name = model.Name,
+                    Amount = model.Amount,
+                    DateCreated = model.DateCreated,
+                    DueDay = model.DueDay,
+                    DueMonth = model.DueMonth,
+
+                };
                 _toebEntities.ServiceCharges.Add(serviceCharge);
                 _toebEntities.Entry(serviceCharge).State = EntityState.Added;
                 _toebEntities.SaveChanges();
@@ -73,15 +99,16 @@ namespace Toeb.DataAccess.Repositories
             }
         }
 
-        public void UpdateServiceCharge(int id, ServiceCharge serviceCharge)
+        public void UpdateServiceCharge(int id, ServiceChargeModel model)
         {
             try
             {
-                if (_toebEntities.ServiceCharges.Find(id) != null)
-                {
-                    _toebEntities.Entry(serviceCharge).State = EntityState.Modified;
-                    _toebEntities.SaveChanges();
-                }
+                var serviceCharge = _toebEntities.ServiceCharges.Find(id);
+                if (serviceCharge == null) throw new Exception("State Not Found");
+                
+                _toebEntities.Entry(serviceCharge).State = EntityState.Modified;
+                _toebEntities.SaveChanges();
+                
             }
             catch (Exception e)
             {

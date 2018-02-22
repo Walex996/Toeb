@@ -6,36 +6,42 @@ using Newtonsoft.Json;
 
 namespace Toeb.Model.ViewModels
 {
-    class ServiceChargeModel
+    public class ServiceChargeModel
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string Name { get; set; }
 
-        [Required]
         public decimal Amount { get; set; }
 
-        [Required]
-        public int AccountId { get; set; }
-
-        [Required]
-        [Display(Name = "Is it compulsory?")]
         public bool IsCompulsory { get; set; }
 
-        [Required]
         public DateTime DateCreated { get; set; }
 
-        public int TotalAmountPaid { get; set; }
+        public decimal? TotalAmountPaid { get; set; }
 
-        
-        public int EstateId { get; set; }
+        public int EstateOwnerId { get; set; }
 
-        [Required]
-        public int BuildingId { get; set; } 
+        public int BuildingId { get; set; }
 
-        
+        public int AccountId { get; set; }
+
+        public int DueDay { get; set; }
+
+        public int DueMonth { get; set; }
+     
+    }
+
+    public class ServiceChargeItem : ServiceChargeModel
+    {
+        public int HouseNumber { get; set; }    
+    }
+
+    public class ServiceChargeFilter : ServiceChargeItem
+    {
+
     }
 }
