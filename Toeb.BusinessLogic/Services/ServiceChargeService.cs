@@ -30,7 +30,7 @@ namespace Toeb.BusinessLogic.Services
             try
             {
                 if (_serviceChargeRepository.NameExist(model)) 
-                    throw new ArgumentException("Service CHarge Already Exists!");
+                    throw new Exception("Service CHarge Already Exists!");
 
                
                 var serviceCharge = new ServiceCharge()
@@ -84,9 +84,9 @@ namespace Toeb.BusinessLogic.Services
                 IsCompulsory = c.IsCompulsory,
                 TotalAmountPaid = c.TotalAmountPaid,
                 BuildingCount = !string.IsNullOrEmpty(c.BuildingIds)?c.BuildingIds.Split(',').ToList().ConvertAll(Convert.ToInt32).Count:0,
-                AccountNumber = c.AccountDetail.AccountNumber,
-                AccountType = c.AccountDetail.AccountType,
-                AccountName = c.AccountDetail.AccountName,
+                AccountNumber = c.AccountDetail.Number,
+                AccountType = c.AccountDetail.Type,
+                AccountName = c.AccountDetail.Name,
                 BankName = c.AccountDetail.BankName
             });
         }
@@ -133,9 +133,9 @@ namespace Toeb.BusinessLogic.Services
 
                 var item = (ServiceChargeItem)GetItem(serviceCharge);
 
-                item.AccountNumber = serviceCharge.AccountDetail.AccountNumber;
-                item.AccountName = serviceCharge.AccountDetail.AccountName;
-                item.AccountType = serviceCharge.AccountDetail.AccountType;
+                item.AccountNumber = serviceCharge.AccountDetail.Number;
+                item.AccountName = serviceCharge.AccountDetail.Name;
+                item.AccountType = serviceCharge.AccountDetail.Type;
                 item.BankName = serviceCharge.AccountDetail.BankName;
                 item.BuildingCount = !string.IsNullOrEmpty(serviceCharge.BuildingIds)
                     ? serviceCharge.BuildingIds.Split(',').ToList().ConvertAll(Convert.ToInt32).Count

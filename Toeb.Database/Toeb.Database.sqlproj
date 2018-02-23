@@ -213,4 +213,10 @@
   <ItemGroup>
     <None Include="Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
 </Project>
