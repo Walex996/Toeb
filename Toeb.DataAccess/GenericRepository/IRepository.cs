@@ -14,7 +14,7 @@ namespace Toeb.DataAccess.GenericRepository
         void Delete(object id);
         void Delete(TEntity entity);
         TEntity Find(object id);
-        IEnumerable<TEntity> GetAll(); 
+        IEnumerable<TEntity> GetAll();
     }
 
     public class Repository<T> : IRepository<T> where T : class
@@ -30,7 +30,7 @@ namespace Toeb.DataAccess.GenericRepository
         public void Delete(object id)
         {
             var entity = _dbEntity.Find(id);
-            Delete(entity); 
+            Delete(entity);
         }
         public void Delete(T entity)
         {
@@ -38,7 +38,7 @@ namespace Toeb.DataAccess.GenericRepository
             _context.SaveChanges();
         }
         public T Find(object id)
-        {  
+        {
             return _dbEntity.Find(id);
         }
 
@@ -52,7 +52,7 @@ namespace Toeb.DataAccess.GenericRepository
             _dbEntity.Add(model);
             _context.SaveChanges();
         }
-         
+
 
         public void Update(T model)
         {

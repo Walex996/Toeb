@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\EstateModel.cs" />
     <Compile Include="ViewModels\StateModel.cs" />
     <Compile Include="ViewModels\TenantModel.cs" />
     <Compile Include="ViewModels\UserModel.cs" />

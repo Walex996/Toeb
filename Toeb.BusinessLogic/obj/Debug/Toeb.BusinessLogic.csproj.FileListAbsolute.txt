@@ -22,3 +22,14 @@ C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.BusinessLogic\bin\D
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.csprojResolveAssemblyReference.cache
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.dll
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.BusinessLogic.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.BusinessLogic.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.DataAccess.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.Model.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\EntityFramework.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.DataAccess.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\Toeb.Model.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\bin\Debug\EntityFramework.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.csprojResolveAssemblyReference.cache
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.BusinessLogic\obj\Debug\Toeb.BusinessLogic.pdb

@@ -23,3 +23,15 @@ C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.DataAccess\bin\Debu
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.csprojResolveAssemblyReference.cache
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.dll
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\Toeb.DataAccess.dll.config
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\Toeb.DataAccess.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\Toeb.DataAccess.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\EntityFramework.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\Toeb.Model.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\Toeb.Model.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\EntityFramework.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.csprojResolveAssemblyReference.cache
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb.DataAccess\obj\Debug\Toeb.DataAccess.pdb

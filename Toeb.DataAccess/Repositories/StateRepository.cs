@@ -23,7 +23,6 @@ namespace Toeb.DataAccess.Repositories
 
         public bool NameExist(StateModel model)
         {
-            
              return GetAll().Any(c => c.Id != model.Id && model.Name.Equals(c.Name,StringComparison.OrdinalIgnoreCase));
         }
     }
@@ -33,7 +32,7 @@ namespace Toeb.DataAccess.Repositories
     //    void Update(StateModel model);
     //    void Delete(int id);
     //    StateModel Find(int id);
-    //    IEnumerable<StateModel> GetAll(); 
+    //    IEnumerable<StateModel> GetAll();
     //}
     //public class StateRepository : IStateRepository
     //{
@@ -67,7 +66,7 @@ namespace Toeb.DataAccess.Repositories
     //            {
     //                Id = state.Id,
     //                Name = state.Name
-    //            }; 
+    //            };
     //        }
     //        catch (Exception)
     //        {
@@ -123,8 +122,8 @@ namespace Toeb.DataAccess.Repositories
     //            if (state == null)
     //                throw new Exception("State not found!");
 
-                
-    //            state.Name = model.Name;                 
+
+    //            state.Name = model.Name;
     //            _db.Entry(state).State = EntityState.Modified;
     //            SaveChanges();
     //        }
