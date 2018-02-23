@@ -207,4 +207,10 @@
   <ItemGroup>
     <None Include="Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
 </Project>

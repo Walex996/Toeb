@@ -8,3 +8,12 @@ C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.Database\obj\Debug\
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.Database\obj\Debug\Toeb.Database.sql
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.Database\obj\Debug\Toeb.Database.dll
 C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb\Toeb.Database\obj\Debug\Toeb.Database.pdb
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\Toeb.Database_Package.sql
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\Toeb.Database_DeployPackage.ps1
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\Toeb.Database.sql
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\Toeb.Database.dll
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\bin\Debug\Toeb.Database.pdb
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\obj\Debug\Toeb.Database.sql
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\obj\Debug\Toeb.Database.dll
+C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\obj\Debug\Toeb.Database.pdb
