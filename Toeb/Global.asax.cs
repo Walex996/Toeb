@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Toeb.App_Start;
 
 namespace Toeb
 {
@@ -13,6 +14,7 @@ namespace Toeb
     {
         protected void Application_Start()
         {
+            AutoMapperConfig.RegisterMaps();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

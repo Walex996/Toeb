@@ -1,13 +1,13 @@
 ﻿/*
 	Target database:	Alabagbe
-	Target instance:	DESKTOP-EDG7CLS
-	Generated date:		2/23/2018 8:49:45 AM
-	Generated on:		DESKTOP-EDG7CLS
+	Target instance:	DESKTOP-QQA4ETB
+	Generated date:		2/25/2018 9:34:05 PM
+	Generated on:		DESKTOP-QQA4ETB
 	Package version:	(undefined)
 	Migration version:	(n/a)
 	Baseline version:	(n/a)
-	ReadyRoll version:	1.16.18038.8301
-	Migrations pending:	1
+	ReadyRoll version:	1.14.9.4465
+	Migrations pending:	0
 
 	IMPORTANT! "SQLCMD Mode" must be activated prior to execution (under the Query menu in SSMS).
 
@@ -33,7 +33,7 @@
 :setvar DatabaseName "Alabagbe"
 :setvar ReleaseVersion ""
 :setvar ForceDeployWithoutBaseline "False"
-:setvar DeployPath "C:\Users\Timothy A. Adekunle\source\repos\toeb\Toeb\Toeb.Database\"
+:setvar DeployPath "C:\Users\SilverEdgeProjects-O\Documents\AspNetProj\Toeb2\Toeb.Database\"
 :setvar DefaultFilePrefix "Alabagbe"
 :setvar DefaultDataPath "C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\"
 :setvar DefaultLogPath "C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\"
@@ -43,7 +43,6 @@
 :on error exit -- Instructs SQLCMD to abort execution as soon as an erroneous batch is encountered
 
 :setvar PackageVersion "(undefined)"
-:setvar IsShadowDeployment 0
 
 GO
 :setvar IsSqlCmdEnabled "True"
@@ -79,9 +78,9 @@ IF SERVERPROPERTY('EngineEdition') = 5 AND DB_NAME() != N'$(DatabaseName)'
   RAISERROR(N'Azure SQL Database does not support switching between databases. Connect to [$(DatabaseName)] and then re-run the script.', 16, 127);
 
 -- As this script has been generated for a specific server instance/database combination, stop execution if there is a mismatch
-IF (@@SERVERNAME != 'DESKTOP-EDG7CLS' OR '$(DatabaseName)' != 'Alabagbe')
+IF (@@SERVERNAME != 'DESKTOP-QQA4ETB' OR '$(DatabaseName)' != 'Alabagbe')
 BEGIN
-	RAISERROR(N'This script should only be executed on the following server/instance: [DESKTOP-EDG7CLS] (Database: [Alabagbe]). Halting deployment.', 16, 127, N'UNKNOWN') WITH NOWAIT;
+	RAISERROR(N'This script should only be executed on the following server/instance: [DESKTOP-QQA4ETB] (Database: [Alabagbe]). Halting deployment.', 16, 127, N'UNKNOWN') WITH NOWAIT;
 	RETURN;
 END
 GO
@@ -100,9 +99,9 @@ SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
 
 PRINT '----- executing pre-deployment script "Pre-Deployment\01_Create_Database.sql" -----';
-GO
 
 ------------------------- BEGIN PRE-DEPLOYMENT SCRIPT: "Pre-Deployment\01_Create_Database.sql" ---------------------------
+GO
 IF (DB_ID(N'$(DatabaseName)') IS NULL)
 BEGIN
 	PRINT N'Creating $(DatabaseName)...';
@@ -116,20 +115,6 @@ END
 GO
 -------------------------- END PRE-DEPLOYMENT SCRIPT: "Pre-Deployment\01_Create_Database.sql" ----------------------------
 
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------       INCREMENTAL MIGRATIONS       ------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
 
 SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 
@@ -166,71 +151,9 @@ IF DB_NAME() != '$(DatabaseName)'
   USE [$(DatabaseName)];
 
 GO
-TRUNCATE TABLE [dbo].[__SchemaSnapshot];
-
-GO
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-GO
-IF DB_NAME() != '$(DatabaseName)'
-  USE [$(DatabaseName)];
-
-GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
-  BEGIN
-    IF @@TRANCOUNT > 0
-      ROLLBACK;
-    RAISERROR ('This script "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" has already been executed within the "$(DatabaseName)" database on this server. Halting deployment.', 16, 127);
-    RETURN;
-  END
-
-GO
-PRINT '
-
-***** EXECUTING MIGRATION "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql", ID: {39a58db0-57ee-4dcc-b8b0-f02518892285} *****';
-
-GO
-
-
------------------ BEGIN INCREMENTAL MIGRATION: "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" ------------------
-GO
--- <Migration ID="39a58db0-57ee-4dcc-b8b0-f02518892285" />
-GO
-
-PRINT N'Altering [dbo].[State]'
-GO
-EXEC sp_rename N'[dbo].[State].[StateName]', N'Name', N'COLUMN'
-GO
-
------------------- END INCREMENTAL MIGRATION: "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" -------------------
-
-
-GO
-IF @@TRANCOUNT <> 1
-  BEGIN
-    DECLARE @ErrorMessage AS NVARCHAR (4000);
-    SET @ErrorMessage = 'This migration "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql" has left the transaction in an invalid or closed state (@@TRANCOUNT=' + CAST (@@TRANCOUNT AS NVARCHAR (10)) + '). Please ensure exactly 1 transaction is open by the end of the migration script.  Rolling-back any pending transactions.';
-    RAISERROR (@ErrorMessage, 16, 127);
-    RETURN;
-  END
-
-INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
-VALUES                                         (CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER), '69EA38846A50FA71071C6A9AABE9FCCEFFBB5411C0655372A660DC62045432AE', '0003_20180222-1101_SilverEdgeProjects-O.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
-
-PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0003_20180222-1101_SilverEdgeProjects-O.sql", ID: {39a58db0-57ee-4dcc-b8b0-f02518892285} *****
-';
-
-GO
 PRINT '# Committing transaction';
 
 COMMIT TRANSACTION;
-
-GO
-PRINT '1 migration(s) deployed successfully';
-
-GO
 
 GO
 
@@ -244,15 +167,17 @@ GO
 ------------------------------------------       POST-DEPLOYMENT SCRIPTS      ------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
+
 SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
 IF DB_NAME() != '$(DatabaseName)'
     USE [$(DatabaseName)];
 
 PRINT '----- executing post-deployment script "Post-Deployment\01_Finalize_Deployment.sql" -----';
-GO
 
 ---------------------- BEGIN POST-DEPLOYMENT SCRIPT: "Post-Deployment\01_Finalize_Deployment.sql" ------------------------
+GO
 /*
 Post-Deployment Script Template
 --------------------------------------------------------------------------------------
@@ -268,21 +193,7 @@ Post-Deployment Script Template
 GO
 ----------------------- END POST-DEPLOYMENT SCRIPT: "Post-Deployment\01_Finalize_Deployment.sql" -------------------------
 
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-IF DB_NAME() != '$(DatabaseName)'
-    USE [$(DatabaseName)];
 
-
-IF SERVERPROPERTY('EngineEdition') != 5 AND HAS_PERMS_BY_NAME(N'sys.xp_logevent', N'OBJECT', N'EXECUTE') = 1
-BEGIN
-  DECLARE @databaseName AS nvarchar(2048), @eventMessage AS nvarchar(2048)
-  SET @databaseName = REPLACE(REPLACE(DB_NAME(), N'\', N'\\'), N'"', N'\"')
-  SET @eventMessage = N'Redgate ReadyRoll: { "deployment": { "description": "ReadyRoll deployed $(ReleaseVersion) to ' + @databaseName + N'", "database": "' + @databaseName + N'" }}'
-  EXECUTE sys.xp_logevent 55000, @eventMessage
-END
-PRINT 'Deployment completed successfully.'
-GO
 
 
 

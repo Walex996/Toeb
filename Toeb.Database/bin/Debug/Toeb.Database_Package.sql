@@ -1,7 +1,7 @@
 ﻿/*
 	Target database:	Alabagbe (configurable)
 	Target instance:	(any)
-	Generated date:		2/22/2018 2:33:51 PM
+	Generated date:		2/25/2018 9:34:05 PM
 	Generated on:		DESKTOP-QQA4ETB
 	Package version:	(undefined)
 	Migration version:	(n/a)
@@ -1314,6 +1314,157 @@ GO
 IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER))
   INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
   VALUES                                         (CAST ('39a58db0-57ee-4dcc-b8b0-f02518892285' AS UNIQUEIDENTIFIER), '69EA38846A50FA71071C6A9AABE9FCCEFFBB5411C0655372A660DC62045432AE', '0003_20180222-1101_SilverEdgeProjects-O.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
+
+GO
+SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
+
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
+GO
+IF DB_NAME() != '$(DatabaseName)'
+  USE [$(DatabaseName)];
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
+  PRINT '
+
+***** EXECUTING MIGRATION "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql", ID: {1da6e69d-b6da-4da0-8ca0-80789fe62a2c} *****';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
+PRINT N''Altering [dbo].[Building]''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[Building] ADD
+[HouseNumber] [int] NOT NULL CONSTRAINT [DF_Building_HouseNumber] DEFAULT ((0))
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
+  PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql", ID: {1da6e69d-b6da-4da0-8ca0-80789fe62a2c} *****
+';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
+  INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
+  VALUES                                         (CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER), '853C5BC0A255FC1B50EE64324AD87E1752B47935E77DD6E3BDF8D801CF6D31CF', '0004_20180223-0850_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
+
+GO
+SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
+
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
+GO
+IF DB_NAME() != '$(DatabaseName)'
+  USE [$(DatabaseName)];
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
+  PRINT '
+
+***** EXECUTING MIGRATION "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql", ID: {02030ceb-7be4-47d2-b01a-2b9ab7f18791} *****';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
+PRINT N''Altering [dbo].[ServiceCharge]''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
+  EXECUTE ('ALTER TABLE [dbo].[ServiceCharge] ADD
+[BuildingIds] [nvarchar] (max) NULL
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
+  PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql", ID: {02030ceb-7be4-47d2-b01a-2b9ab7f18791} *****
+';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
+  INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
+  VALUES                                         (CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER), '020864EE8ED2CB318E293863479A572D10B0C934E18503E9A5AE027ACBC6AD62', '0005_20180223-1002_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
+
+GO
+SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
+
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
+GO
+IF DB_NAME() != '$(DatabaseName)'
+  USE [$(DatabaseName)];
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
+  PRINT '
+
+***** EXECUTING MIGRATION "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql", ID: {9fa1aec5-055a-4955-92d1-f14ec92a8f34} *****';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
+PRINT N''Altering [dbo].[AccountDetail]''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[AccountDetail].[AccountName]'', N''Name'', N''COLUMN''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
+  PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql", ID: {9fa1aec5-055a-4955-92d1-f14ec92a8f34} *****
+';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
+  INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
+  VALUES                                         (CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER), 'ADEB6DCC814D53E683DDC5E060EB00B8B66B9B52F566BD7108E19D00CBFC1C4B', '0006_20180223-1248_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
+
+GO
+SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
+
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
+
+GO
+IF DB_NAME() != '$(DatabaseName)'
+  USE [$(DatabaseName)];
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  PRINT '
+
+***** EXECUTING MIGRATION "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql", ID: {d501ecf2-7acf-4409-9034-96abe60aa20b} *****';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  EXECUTE ('
+PRINT N''Altering [dbo].[AccountDetail]''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[AccountDetail].[AccountType]'', N''Type'', N''COLUMN''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  EXECUTE ('EXEC sp_rename N''[dbo].[AccountDetail].[AccountNumber]'', N''Number'', N''COLUMN''
+');
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql", ID: {d501ecf2-7acf-4409-9034-96abe60aa20b} *****
+';
+
+GO
+IF NOT EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
+  INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
+  VALUES                                         (CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER), 'DC03D1900EAD2EB8C6EE81727EB2DF2ED282308BEB41CAF85F1B4B4C6D008B9A', '0007_20180223-1305_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
 
 GO
 PRINT '# Committing transaction';
