@@ -16,7 +16,11 @@ namespace Toeb.App_Start
             {
                 StateMap(cfg);
                 UserMap(cfg);
+<<<<<<< HEAD
                 EventMap(cfg);
+=======
+                EstateMap(cfg);
+>>>>>>> 0ce4bf465d2e960200b158d8d0637540d4047a9b
             });
         }
 
@@ -34,12 +38,22 @@ namespace Toeb.App_Start
             cfg.CreateMap<UserItem, User>();
             cfg.CreateMap<User, UserItem>();
         }
+<<<<<<< HEAD
         private static void EventMap(IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<Event, EventModel>();
             cfg.CreateMap<EventModel, Event>();
             cfg.CreateMap<EventItem, Event>();
             cfg.CreateMap<Event, EventItem>();
+=======
+
+        private static void EstateMap(IMapperConfigurationExpression cfg)
+        {
+            cfg.CreateMap<Estate, EstateModel>();
+            cfg.CreateMap<EstateModel, Estate>();
+            cfg.CreateMap<EstateItem, Estate>();
+            cfg.CreateMap<Estate, EstateItem>();
+>>>>>>> 0ce4bf465d2e960200b158d8d0637540d4047a9b
         }
     }
 }

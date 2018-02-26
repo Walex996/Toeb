@@ -31,7 +31,7 @@ namespace Toeb.Model.ViewModels
         public List<int> BuildingModelIds { get; set; }
     }
 
-     
+
     public class ServiceChargeItem : ServiceChargeModel
     {
         public int BuildingCount { get; set; }
@@ -42,7 +42,7 @@ namespace Toeb.Model.ViewModels
 
     }
 
-    public class ServiceCjargeFilter : ServiceChargeItem
+    public class ServiceChargeFilter : ServiceChargeItem
     {
 
     }
