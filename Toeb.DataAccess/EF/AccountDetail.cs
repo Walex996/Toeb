@@ -19,13 +19,13 @@ namespace Toeb.DataAccess.EF
 
         [Required]
         [StringLength(100)]
-        public string AccountName { get; set; }
+        public string Name { get; set; }
 
-        public int AccountType { get; set; }
+        public int Type { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string AccountNumber { get; set; }
+        public string Number { get; set; }
 
         [Required]
         [StringLength(100)]

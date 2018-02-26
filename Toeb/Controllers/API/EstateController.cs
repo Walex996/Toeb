@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Toeb.BusinessLogic.Services;
 using Toeb.Model.ViewModels;
 
 namespace Toeb.Controllers.API
 {
+    [EnableCors("*","*","*")]
     public class EstateController : ApiController
     {
         private readonly IEstateService _estateService;
@@ -18,6 +20,7 @@ namespace Toeb.Controllers.API
             _estateService = estateService;
         }
 
+        //GET: api/estate
         public IHttpActionResult Get()
         {
             try
@@ -31,6 +34,7 @@ namespace Toeb.Controllers.API
             }
         }
 
+        //GET: api/estate/5
         public IHttpActionResult Get(int id)
         {
             try
@@ -44,7 +48,8 @@ namespace Toeb.Controllers.API
             }
         }
 
-        public IHttpActionResult Post(EstateModel model)
+        //Post: api/estate
+        public IHttpActionResult Post([FromBody]EstateModel model)
         {
             try
             {
@@ -60,7 +65,8 @@ namespace Toeb.Controllers.API
             }
         }
 
-        public IHttpActionResult Put(EstateModel model)
+
+        public IHttpActionResult Put([FromBody]EstateModel model)
         {
             try
             {
@@ -74,6 +80,7 @@ namespace Toeb.Controllers.API
                 return BadRequest(ec.Message);
             }
         }
+
 
         public IHttpActionResult Delete(int id)
         {

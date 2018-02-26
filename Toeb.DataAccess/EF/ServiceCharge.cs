@@ -38,5 +38,6 @@ namespace Toeb.DataAccess.EF
         public virtual Building Building { get; set; }
 
         public virtual User User { get; set; }
+        public string BuildingIds { get; set; }
     }
 }
