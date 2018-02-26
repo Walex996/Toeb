@@ -48,7 +48,7 @@ namespace Toeb.BusinessLogic.Services
             }
             catch (Exception ec)
             {
-                throw ;
+                throw new Exception(ec.Message);
             }
         }
 
@@ -61,10 +61,10 @@ namespace Toeb.BusinessLogic.Services
 
                 _estateRepository.Delete(id);
             }
-            catch (Exception)
+            catch (Exception ec)
             {
 
-                throw;
+                throw new Exception(ec.Message);
             }
         }
 
@@ -87,10 +87,10 @@ namespace Toeb.BusinessLogic.Services
                 Mapper.Map(model, estate);
                 _estateRepository.Update(estate);
             }
-            catch (Exception)
+            catch (Exception ec)
             {
 
-                throw;
+                throw new Exception(ec.Message);
             }
 
         }
@@ -119,10 +119,10 @@ namespace Toeb.BusinessLogic.Services
                 //return new EstateModel() {Id = estate.Id, Name = estate.Name};
                 return Mapper.Map<Estate, EstateModel>(estate);
             }
-            catch (Exception)
+            catch (Exception ec)
             {
 
-                throw;
+                throw new Exception(ec.Message);
             }
         }
 
@@ -141,10 +141,10 @@ namespace Toeb.BusinessLogic.Services
                 //};
                 return Mapper.Map<Estate, EstateItem>(estate);
             }
-            catch (Exception)
+            catch (Exception ec)
             {
 
-                throw;
+                throw new Exception(ec.Message);
             }
         }
     }

@@ -215,6 +215,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\API\ComplaintController.cs" />
     <Compile Include="Controllers\API\EstateController.cs" />
     <Compile Include="Controllers\API\AccountDetailController.cs" />
     <Compile Include="Controllers\API\ServiceChargeController.cs" />
