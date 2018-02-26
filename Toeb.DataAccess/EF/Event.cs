@@ -15,7 +15,7 @@ namespace Toeb.DataAccess.EF
 
         [Required]
         [StringLength(50)]
-        public string EventName { get; set; }
+        public string Name { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -28,6 +28,8 @@ namespace Toeb.DataAccess.EF
         public int Occurence { get; set; }
 
         public int EstateId { get; set; }
+
+        public IEnumerable<int> InvitedUserIds { get; set; }
 
         public virtual Estate Estate { get; set; }
 

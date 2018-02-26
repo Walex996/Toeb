@@ -16,7 +16,7 @@ namespace Toeb.Model.ViewModels
 
         [Required]
         [StringLength(50)]
-        public string EventName { get; set; }
+        public string Name { get; set; }
 
         public DateTime StartDate { get; set; }
 

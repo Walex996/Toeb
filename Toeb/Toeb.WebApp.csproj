@@ -206,6 +206,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\API\AccountDetailController.cs" />
+    <Compile Include="Controllers\API\EventController.cs" />
     <Compile Include="Controllers\API\ServiceChargeController.cs" />
     <Compile Include="Controllers\API\StateController.cs" />
     <Compile Include="Controllers\MVC\AccountController.cs" />
