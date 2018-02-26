@@ -16,6 +16,7 @@ namespace Toeb.App_Start
             {
                 StateMap(cfg);
                 UserMap(cfg);
+                EstateMap(cfg);
             });
         }
 
@@ -27,6 +28,14 @@ namespace Toeb.App_Start
             cfg.CreateMap<State, StateItem>();
         }
         private static void UserMap(IMapperConfigurationExpression cfg)
+        {
+            cfg.CreateMap<User, UserModel>();
+            cfg.CreateMap<UserModel, User>();
+            cfg.CreateMap<UserItem, User>();
+            cfg.CreateMap<User, UserItem>();
+        }
+
+        private static void EstateMap(IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<User, UserModel>();
             cfg.CreateMap<UserModel, User>();

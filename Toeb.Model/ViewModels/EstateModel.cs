@@ -33,7 +33,7 @@ namespace Toeb.Model.ViewModels
 
     public class EstateItem : EstateModel
     {
-        public int EventCount { get; set; }
+        public int EstateCount { get; set; }
         public int SubscriptionCount { get; set; }
     }
 
