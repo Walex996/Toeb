@@ -18,8 +18,7 @@ namespace Toeb.App_Start
                 UserMap(cfg);
                 EventMap(cfg);
                 EstateMap(cfg);
-
-            });
+   });
         }
 
         private static void StateMap(IMapperConfigurationExpression cfg)
