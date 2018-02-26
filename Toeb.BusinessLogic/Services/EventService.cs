@@ -17,7 +17,7 @@ namespace Toeb.BusinessLogic.Services
         EventModel GetById(int id);
         EventItem GetDetails(int id);
     }
-    class EventService : IEventService
+    public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
         public EventService(IEventRepository eventRepository)
