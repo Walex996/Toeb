@@ -40,6 +40,8 @@ namespace Toeb.Model.ViewModels
         [Required]
         [StringLength(50)]
         public string Password { get; set; }
+
+        public string ConfirmPassword { get; set; }
     }
 
     public class UserItem : UserModel
@@ -67,8 +69,6 @@ namespace Toeb.Model.ViewModels
         public int ServiceChargeCount { get; set; }
 
         public string StateOFOrigin { get; set; }
-
-        public string ConfirmPassword { get; set; }
 
     }
     public class UserFilter : UserItem
