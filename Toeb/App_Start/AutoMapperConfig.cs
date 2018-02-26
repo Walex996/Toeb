@@ -37,10 +37,10 @@ namespace Toeb.App_Start
 
         private static void EstateMap(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<User, UserModel>();
-            cfg.CreateMap<UserModel, User>();
-            cfg.CreateMap<UserItem, User>();
-            cfg.CreateMap<User, UserItem>();
+            cfg.CreateMap<Estate, EstateModel>();
+            cfg.CreateMap<EstateModel, Estate>();
+            cfg.CreateMap<EstateItem, Estate>();
+            cfg.CreateMap<Estate, EstateItem>();
         }
     }
 }
