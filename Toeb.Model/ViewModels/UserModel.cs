@@ -40,7 +40,11 @@ namespace Toeb.Model.ViewModels
 
     public class UserItem : UserModel
     {
+        public string Name { get; set; }
 
+        public IEnumerable<int> EstateIds { get; set; }
+        public int EstateCount { get; set; }
+        public IEnumerable<int> BuildingIds { get; set; }
     }
     public class UserFilter : UserItem
     {
