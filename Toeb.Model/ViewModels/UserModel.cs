@@ -68,7 +68,7 @@ namespace Toeb.Model.ViewModels
 
         public int ServiceChargeCount { get; set; }
 
-        public string StateOFOrigin { get; set; }
+        public string StateOfOrigin { get; set; }
 
     }
     public class UserFilter : UserItem

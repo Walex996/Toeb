@@ -94,6 +94,11 @@ namespace Toeb.BusinessLogic.Services
                     throw new Exception("User not found");
                 var item = Mapper.Map<User, UserItem>(user);
                 item.Name = user.FirstName + " " + user.LastName;
+                item.BuildingCount = user.Buildings.Count;
+                item.EstateCount = user.Estates.Count;
+                item.ComplaintCount = user.Complaints.Count;
+                item.EventCount = user.Events.Count;
+                item.ServiceChargeCount = user.ServiceCharges.Count;
                 return item;
             }
             catch (Exception e)
