@@ -3,6 +3,7 @@ C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.dll.config
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.pdb
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Antlr3.Runtime.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\AutoMapper.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\EntityFramework.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\EntityFramework.SqlServer.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Microsoft.AI.Agent.Intercept.dll
@@ -29,7 +30,9 @@ C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Microsoft.Web.Infrastructur
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Newtonsoft.Json.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Owin.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Net.Http.Formatting.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Cors.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Helpers.dll
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.Cors.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.WebHost.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Mvc.dll
@@ -45,7 +48,11 @@ C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\WebGrease.dll
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.BusinessLogic.pdb
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.DataAccess.pdb
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Toeb.Model.pdb
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\AutoMapper.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Net.Http.Formatting.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.xml
+C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.Cors.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Helpers.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Mvc.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Optimization.xml
@@ -55,8 +62,6 @@ C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.WebPages.Deploym
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.WebPages.Razor.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Antlr3.Runtime.pdb
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\Newtonsoft.Json.xml
-C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Net.Http.Formatting.xml
-C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\System.Web.Http.WebHost.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\EntityFramework.xml
 C:\Users\Seyi\Documents\ProjectsEstate\Toeb\Toeb\bin\EntityFramework.SqlServer.xml

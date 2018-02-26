@@ -1,13 +1,13 @@
 ﻿/*
 	Target database:	Alabagbe
 	Target instance:	SILVEREDGE
-	Generated date:		2/23/2018 4:45:19 PM
+	Generated date:		2/26/2018 11:16:07 AM
 	Generated on:		SILVEREDGE
 	Package version:	(undefined)
 	Migration version:	(n/a)
 	Baseline version:	(n/a)
 	ReadyRoll version:	1.14.12.4663
-	Migrations pending:	4
+	Migrations pending:	0
 
 	IMPORTANT! "SQLCMD Mode" must be activated prior to execution (under the Query menu in SSMS).
 
@@ -116,17 +116,6 @@ GO
 -------------------------- END PRE-DEPLOYMENT SCRIPT: "Pre-Deployment\01_Create_Database.sql" ----------------------------
 
 
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------       INCREMENTAL MIGRATIONS       ------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
 SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
 
 SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
@@ -162,234 +151,9 @@ IF DB_NAME() != '$(DatabaseName)'
   USE [$(DatabaseName)];
 
 GO
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-GO
-IF DB_NAME() != '$(DatabaseName)'
-  USE [$(DatabaseName)];
-
-GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER))
-  BEGIN
-    IF @@TRANCOUNT > 0
-      ROLLBACK;
-    RAISERROR ('This script "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql" has already been executed within the "$(DatabaseName)" database on this server. Halting deployment.', 16, 127);
-    RETURN;
-  END
-
-GO
-PRINT '
-
-***** EXECUTING MIGRATION "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql", ID: {1da6e69d-b6da-4da0-8ca0-80789fe62a2c} *****';
-
-GO
-
-
------------------ BEGIN INCREMENTAL MIGRATION: "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql" -------------------
-GO
--- <Migration ID="1da6e69d-b6da-4da0-8ca0-80789fe62a2c" />
-GO
-
-PRINT N'Altering [dbo].[Building]'
-GO
-ALTER TABLE [dbo].[Building] ADD
-[HouseNumber] [int] NOT NULL CONSTRAINT [DF_Building_HouseNumber] DEFAULT ((0))
-GO
-
------------------- END INCREMENTAL MIGRATION: "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql" --------------------
-
-
-GO
-IF @@TRANCOUNT <> 1
-  BEGIN
-    DECLARE @ErrorMessage AS NVARCHAR (4000);
-    SET @ErrorMessage = 'This migration "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql" has left the transaction in an invalid or closed state (@@TRANCOUNT=' + CAST (@@TRANCOUNT AS NVARCHAR (10)) + '). Please ensure exactly 1 transaction is open by the end of the migration script.  Rolling-back any pending transactions.';
-    RAISERROR (@ErrorMessage, 16, 127);
-    RETURN;
-  END
-
-INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
-VALUES                                         (CAST ('1da6e69d-b6da-4da0-8ca0-80789fe62a2c' AS UNIQUEIDENTIFIER), '853C5BC0A255FC1B50EE64324AD87E1752B47935E77DD6E3BDF8D801CF6D31CF', '0004_20180223-0850_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
-
-PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0004_20180223-0850_Timothy-A.-Adekunle.sql", ID: {1da6e69d-b6da-4da0-8ca0-80789fe62a2c} *****
-';
-
-GO
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-GO
-IF DB_NAME() != '$(DatabaseName)'
-  USE [$(DatabaseName)];
-
-GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER))
-  BEGIN
-    IF @@TRANCOUNT > 0
-      ROLLBACK;
-    RAISERROR ('This script "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" has already been executed within the "$(DatabaseName)" database on this server. Halting deployment.', 16, 127);
-    RETURN;
-  END
-
-GO
-PRINT '
-
-***** EXECUTING MIGRATION "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql", ID: {02030ceb-7be4-47d2-b01a-2b9ab7f18791} *****';
-
-GO
-
-
------------------ BEGIN INCREMENTAL MIGRATION: "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" -------------------
-GO
--- <Migration ID="02030ceb-7be4-47d2-b01a-2b9ab7f18791" />
-GO
-
-PRINT N'Altering [dbo].[ServiceCharge]'
-GO
-ALTER TABLE [dbo].[ServiceCharge] ADD
-[BuildingIds] [nvarchar] (max) NULL
-GO
-
------------------- END INCREMENTAL MIGRATION: "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" --------------------
-
-
-GO
-IF @@TRANCOUNT <> 1
-  BEGIN
-    DECLARE @ErrorMessage AS NVARCHAR (4000);
-    SET @ErrorMessage = 'This migration "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql" has left the transaction in an invalid or closed state (@@TRANCOUNT=' + CAST (@@TRANCOUNT AS NVARCHAR (10)) + '). Please ensure exactly 1 transaction is open by the end of the migration script.  Rolling-back any pending transactions.';
-    RAISERROR (@ErrorMessage, 16, 127);
-    RETURN;
-  END
-
-INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
-VALUES                                         (CAST ('02030ceb-7be4-47d2-b01a-2b9ab7f18791' AS UNIQUEIDENTIFIER), '020864EE8ED2CB318E293863479A572D10B0C934E18503E9A5AE027ACBC6AD62', '0005_20180223-1002_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
-
-PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0005_20180223-1002_Timothy-A.-Adekunle.sql", ID: {02030ceb-7be4-47d2-b01a-2b9ab7f18791} *****
-';
-
-GO
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-GO
-IF DB_NAME() != '$(DatabaseName)'
-  USE [$(DatabaseName)];
-
-GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER))
-  BEGIN
-    IF @@TRANCOUNT > 0
-      ROLLBACK;
-    RAISERROR ('This script "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql" has already been executed within the "$(DatabaseName)" database on this server. Halting deployment.', 16, 127);
-    RETURN;
-  END
-
-GO
-PRINT '
-
-***** EXECUTING MIGRATION "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql", ID: {9fa1aec5-055a-4955-92d1-f14ec92a8f34} *****';
-
-GO
-
-
------------------ BEGIN INCREMENTAL MIGRATION: "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql" -------------------
-GO
--- <Migration ID="9fa1aec5-055a-4955-92d1-f14ec92a8f34" />
-GO
-
-PRINT N'Altering [dbo].[AccountDetail]'
-GO
-EXEC sp_rename N'[dbo].[AccountDetail].[AccountName]', N'Name', N'COLUMN'
-GO
-
------------------- END INCREMENTAL MIGRATION: "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql" --------------------
-
-
-GO
-IF @@TRANCOUNT <> 1
-  BEGIN
-    DECLARE @ErrorMessage AS NVARCHAR (4000);
-    SET @ErrorMessage = 'This migration "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql" has left the transaction in an invalid or closed state (@@TRANCOUNT=' + CAST (@@TRANCOUNT AS NVARCHAR (10)) + '). Please ensure exactly 1 transaction is open by the end of the migration script.  Rolling-back any pending transactions.';
-    RAISERROR (@ErrorMessage, 16, 127);
-    RETURN;
-  END
-
-INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
-VALUES                                         (CAST ('9fa1aec5-055a-4955-92d1-f14ec92a8f34' AS UNIQUEIDENTIFIER), 'ADEB6DCC814D53E683DDC5E060EB00B8B66B9B52F566BD7108E19D00CBFC1C4B', '0006_20180223-1248_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
-
-PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0006_20180223-1248_Timothy-A.-Adekunle.sql", ID: {9fa1aec5-055a-4955-92d1-f14ec92a8f34} *****
-';
-
-GO
-SET IMPLICIT_TRANSACTIONS, NUMERIC_ROUNDABORT OFF;
-
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, NOCOUNT, QUOTED_IDENTIFIER ON;
-
-GO
-IF DB_NAME() != '$(DatabaseName)'
-  USE [$(DatabaseName)];
-
-GO
-IF EXISTS (SELECT 1 FROM [$(DatabaseName)].[dbo].[__MigrationLogCurrent] WHERE [migration_id] = CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER))
-  BEGIN
-    IF @@TRANCOUNT > 0
-      ROLLBACK;
-    RAISERROR ('This script "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" has already been executed within the "$(DatabaseName)" database on this server. Halting deployment.', 16, 127);
-    RETURN;
-  END
-
-GO
-PRINT '
-
-***** EXECUTING MIGRATION "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql", ID: {d501ecf2-7acf-4409-9034-96abe60aa20b} *****';
-
-GO
-
-
------------------ BEGIN INCREMENTAL MIGRATION: "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" -------------------
-GO
--- <Migration ID="d501ecf2-7acf-4409-9034-96abe60aa20b" />
-GO
-
-PRINT N'Altering [dbo].[AccountDetail]'
-GO
-EXEC sp_rename N'[dbo].[AccountDetail].[AccountType]', N'Type', N'COLUMN'
-GO
-EXEC sp_rename N'[dbo].[AccountDetail].[AccountNumber]', N'Number', N'COLUMN'
-GO
-
------------------- END INCREMENTAL MIGRATION: "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" --------------------
-
-
-GO
-IF @@TRANCOUNT <> 1
-  BEGIN
-    DECLARE @ErrorMessage AS NVARCHAR (4000);
-    SET @ErrorMessage = 'This migration "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" has left the transaction in an invalid or closed state (@@TRANCOUNT=' + CAST (@@TRANCOUNT AS NVARCHAR (10)) + '). Please ensure exactly 1 transaction is open by the end of the migration script.  Rolling-back any pending transactions.';
-    RAISERROR (@ErrorMessage, 16, 127);
-    RETURN;
-  END
-
-INSERT [$(DatabaseName)].[dbo].[__MigrationLog] ([migration_id], [script_checksum], [script_filename], [complete_dt], [applied_by], [deployed], [version], [package_version], [release_version])
-VALUES                                         (CAST ('d501ecf2-7acf-4409-9034-96abe60aa20b' AS UNIQUEIDENTIFIER), 'DC03D1900EAD2EB8C6EE81727EB2DF2ED282308BEB41CAF85F1B4B4C6D008B9A', '0007_20180223-1305_Timothy-A.-Adekunle.sql', SYSDATETIME(), SYSTEM_USER, 1, NULL, '$(PackageVersion)', CASE '$(ReleaseVersion)' WHEN '' THEN NULL ELSE '$(ReleaseVersion)' END);
-
-PRINT '***** FINISHED EXECUTING MIGRATION "Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql", ID: {d501ecf2-7acf-4409-9034-96abe60aa20b} *****
-';
-
-GO
 PRINT '# Committing transaction';
 
 COMMIT TRANSACTION;
-
-GO
-PRINT '4 migration(s) deployed successfully';
-
-GO
 
 GO
 

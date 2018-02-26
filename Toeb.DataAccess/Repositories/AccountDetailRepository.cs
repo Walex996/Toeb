@@ -22,7 +22,8 @@ namespace Toeb.DataAccess.Repositories
 
         public bool NameExist(AccountDetailModel model)
         {
-            return GetAll().Any(c => c.Id != model.Id && model.Name.Equals(c.Name, StringComparison.OrdinalIgnoreCase));
+            //return GetAll().Any(c => c.Id != model.Id && model.Name.Equals(c.Name,StringComparison.OrdinalIgnoreCase));
+            return false;
         }
     }
 }

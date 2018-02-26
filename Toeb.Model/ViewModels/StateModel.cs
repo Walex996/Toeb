@@ -14,7 +14,7 @@ namespace Toeb.Model.ViewModels
         [Required(ErrorMessage ="Please enter the state name")]
         [RegularExpression("[A-Za-z]",ErrorMessage ="Numbers not allowed"), ]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } 
     }
     public class StateItem:StateModel
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,10 +33,11 @@ namespace Toeb.BusinessLogic.Services
                 if (_stateRepository.NameExist(model))
                     throw new Exception("State already exist!");
 
-                var state = new State()
-                {
-                    Name = model.Name
-                };
+                //var state = new State()
+                //{
+                //    Name = model.Name
+                //};
+               var state = Mapper.Map<StateModel, State>(model);                 
                 _stateRepository.Insert(state);
 
             }
@@ -64,12 +66,15 @@ namespace Toeb.BusinessLogic.Services
 
         public IEnumerable<StateItem> GetAll()
         {
-            return _stateRepository.GetAll().Select(c=> new StateItem()
-            {
-                Id=c.Id,
-                Name=c.Name,
-                EstateCount = c.Estates.Count
-            });
+            //return _stateRepository.GetAll().Select(c=> new StateItem()
+            //{
+            //    Id=c.Id,
+            //    Name=c.Name,
+            //    EstateCount = c.Estates.Count
+            //});
+
+            var entities = _stateRepository.GetAll();
+            return Mapper.Map<IEnumerable<State>, IEnumerable<StateItem>>(entities);
         }
 
         public StateModel GetById(int id)
@@ -78,8 +83,9 @@ namespace Toeb.BusinessLogic.Services
             {
                 var state = _stateRepository.Find(id);
                 if (state == null) throw new Exception("State not found");
-                 
-                return new StateModel() { Id = state.Id, Name = state.Name };
+
+                //return new StateModel() { Id = state.Id, Name = state.Name };
+                return Mapper.Map<State, StateModel>(state);
             }
             catch (Exception )
             {
@@ -94,11 +100,13 @@ namespace Toeb.BusinessLogic.Services
                 var state = _stateRepository.Find(id);
                 if (state == null) throw new Exception("State not found");
 
-                return new StateItem() {
-                    Id = state.Id,
-                    Name = state.Name,
-                    EstateCount =state.Estates.Count
-                };
+                //return new StateItem() {
+                //    Id = state.Id,
+                //    Name = state.Name,
+                //    EstateCount =state.Estates.Count
+                //};
+
+                return Mapper.Map<State, StateItem>(state);
             }
             catch (Exception)
             {
@@ -116,7 +124,8 @@ namespace Toeb.BusinessLogic.Services
                 var state = _stateRepository.Find(model.Id);
                 if (state == null) throw new Exception("State not found!");
 
-                state.Name = model.Name;
+                Mapper.Map(model, state);
+               // state.Name = model.Name;
                 _stateRepository.Update(state);
 
             }
