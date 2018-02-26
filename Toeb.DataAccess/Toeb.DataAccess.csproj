@@ -68,6 +68,7 @@
     <Compile Include="Repositories\ComplaintRepository.cs" />
     <Compile Include="Repositories\EstateRepository.cs" />
     <Compile Include="Repositories\AccountDetailRepository.cs" />
+    <Compile Include="Repositories\EventRepository.cs" />
     <Compile Include="Repositories\ServiceChargeRepository.cs" />
     <Compile Include="Repositories\StateRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

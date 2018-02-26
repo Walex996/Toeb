@@ -48,8 +48,10 @@
     <Compile Include="Services\ComplaintService.cs" />
     <Compile Include="Services\EstateService.cs" />
     <Compile Include="Services\AccountDetailService.cs" />
+    <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ServiceChargeService.cs" />
     <Compile Include="Services\StateService.cs" />
+    <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Toeb.DataAccess\Toeb.DataAccess.csproj">

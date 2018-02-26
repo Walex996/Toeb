@@ -36,10 +36,39 @@ namespace Toeb.Model.ViewModels
         public int NextOfKinId { get; set; }
 
         public int Gender { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Password { get; set; }
     }
 
     public class UserItem : UserModel
     {
+        public string Name { get; set; }
+
+        public IEnumerable<int> EstateIds { get; set; }
+
+        public int EstateCount { get; set; }
+        
+        public IEnumerable<int> BuildingIds { get; set; }
+
+        public int BuildingCount { get; set; }
+
+        public IEnumerable<int> ComplaintIds { get; set; }
+
+        public int ComplaintCount { get; set; }
+
+        public IEnumerable<int> EventIds { get; set; }
+
+        public int EventCount { get; set; }
+
+        public IEnumerable<int> ServiceChargeIds { get; set; }
+
+        public int ServiceChargeCount { get; set; }
+
+        public string StateOFOrigin { get; set; }
+
+        public string ConfirmPassword { get; set; }
 
     }
     public class UserFilter : UserItem

@@ -45,6 +45,7 @@
     <Compile Include="ViewModels\ComplaintModel.cs" />
     <Compile Include="ViewModels\EstateModel.cs" />
     <Compile Include="ViewModels\AccountDetailModel.cs" />
+    <Compile Include="ViewModels\EventModel.cs" />
     <Compile Include="ViewModels\ServiceChargeModel.cs" />
     <Compile Include="ViewModels\StateModel.cs" />
     <Compile Include="ViewModels\TenantModel.cs" />
