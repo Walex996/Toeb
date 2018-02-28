@@ -14,6 +14,7 @@ namespace Toeb
     {
         protected void Application_Start()
         {
+            AutofacConfig.RegisterDI();
             AutoMapperConfig.RegisterMaps();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
