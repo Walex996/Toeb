@@ -48,6 +48,10 @@ namespace Toeb.DataAccess.EF
 
         public int Gender { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        public string Password { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }
 

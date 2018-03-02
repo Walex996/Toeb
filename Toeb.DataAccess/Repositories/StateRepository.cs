@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using Toeb.DataAccess.EF;
 using Toeb.Model.ViewModels;
 using System.Data.Entity;
-using Toeb.DataAccess.GenericRepository;
+using Library.Repository.Pattern.Repositories;
+using Library.Repository.Pattern.EntityFramework;
+using Library.Repository.Pattern.DataContext;
+using Library.Repository.Pattern.UnitOfWork;
 
 namespace Toeb.DataAccess.Repositories
 {
@@ -16,15 +19,13 @@ namespace Toeb.DataAccess.Repositories
     }
     public class StateRepository : Repository<State>, IStateRepository
     {
-        public StateRepository(ToebEntities context):base(context)
+        public StateRepository(IDataContextAsync context, IUnitOfWorkAsync unitOfWork) : base(context, unitOfWork)
         {
-
         }
 
         public bool NameExist(StateModel model)
         {
-            
-             return GetAll().Any(c => c.Id != model.Id && model.Name.Equals(c.Name,StringComparison.OrdinalIgnoreCase));
+             return Table.Any(c => c.Id != model.Id && model.Name.Equals(c.Name,StringComparison.OrdinalIgnoreCase));
         }
     }
     //public interface IStateRepository
@@ -33,7 +34,7 @@ namespace Toeb.DataAccess.Repositories
     //    void Update(StateModel model);
     //    void Delete(int id);
     //    StateModel Find(int id);
-    //    IEnumerable<StateModel> GetAll(); 
+    //    IEnumerable<StateModel> GetAll();
     //}
     //public class StateRepository : IStateRepository
     //{
@@ -67,7 +68,7 @@ namespace Toeb.DataAccess.Repositories
     //            {
     //                Id = state.Id,
     //                Name = state.Name
-    //            }; 
+    //            };
     //        }
     //        catch (Exception)
     //        {
@@ -123,8 +124,8 @@ namespace Toeb.DataAccess.Repositories
     //            if (state == null)
     //                throw new Exception("State not found!");
 
-                
-    //            state.Name = model.Name;                 
+
+    //            state.Name = model.Name;
     //            _db.Entry(state).State = EntityState.Modified;
     //            SaveChanges();
     //        }

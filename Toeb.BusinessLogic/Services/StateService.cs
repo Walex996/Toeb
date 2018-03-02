@@ -37,7 +37,7 @@ namespace Toeb.BusinessLogic.Services
                 //{
                 //    Name = model.Name
                 //};
-               var state = Mapper.Map<StateModel, State>(model);                 
+               var state = Mapper.Map<StateModel, State>(model);
                 _stateRepository.Insert(state);
 
             }
@@ -60,7 +60,7 @@ namespace Toeb.BusinessLogic.Services
             catch (Exception ec)
             {
 
-                throw;
+                throw new Exception(ec.Message);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Toeb.BusinessLogic.Services
             //    EstateCount = c.Estates.Count
             //});
 
-            var entities = _stateRepository.GetAll();
+            var entities = _stateRepository.Table.ToList();
             return Mapper.Map<IEnumerable<State>, IEnumerable<StateItem>>(entities);
         }
 
@@ -89,7 +89,7 @@ namespace Toeb.BusinessLogic.Services
             }
             catch (Exception )
             {
-                throw; 
+                throw;
             }
         }
 

@@ -4,8 +4,9 @@ namespace Toeb.DataAccess.EF
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using Library.Repository.Pattern.EntityFramework;
 
-    public partial class ToebEntities : DbContext
+    public partial class ToebEntities : EntityFrameworkDataContext
     {
         public ToebEntities()
             : base("name=ToebEntities")

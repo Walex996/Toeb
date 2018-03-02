@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Toeb.DataAccess.EF;
+using Toeb.DataAccess.EF;   
 using Toeb.DataAccess.Repositories;
 using Toeb.Model.ViewModels;
 
@@ -92,7 +92,7 @@ namespace Toeb.BusinessLogic.Services
             //    AccountName = c.AccountDetail.Name,
             //    BankName = c.AccountDetail.BankName
             //});
-            return _serviceChargeRepository.GetAll().Select(c => 
+            return _serviceChargeRepository.Table.ToList().Select(c => 
             {
                 var item = Mapper.Map<ServiceCharge, ServiceChargeItem>(c);
                 item.BuildingCount = !string.IsNullOrEmpty(c.BuildingIds) ? c.BuildingIds.Split(',').ToList().ConvertAll(Convert.ToInt32).Count : 0;

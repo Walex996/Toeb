@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Library.Repository.Pattern.DataContext;
+using Library.Repository.Pattern.EntityFramework;
+using Library.Repository.Pattern.Repositories;
+using Library.Repository.Pattern.UnitOfWork;
 using Toeb.DataAccess.EF;
-using Toeb.DataAccess.GenericRepository;
 using Toeb.Model.ViewModels;
 
 namespace Toeb.DataAccess.Repositories
@@ -15,9 +13,8 @@ namespace Toeb.DataAccess.Repositories
     }
     public class AccountDetailRepository : Repository<AccountDetail>, IAccountDetailRepository 
     {
-        public AccountDetailRepository(ToebEntities context) : base(context)
+        public AccountDetailRepository(IDataContextAsync context, IUnitOfWorkAsync unitOfWork) : base(context, unitOfWork)
         {
-            
         }
 
         public bool NameExist(AccountDetailModel model)

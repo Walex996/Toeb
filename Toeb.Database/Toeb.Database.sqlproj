@@ -219,4 +219,10 @@
   <ItemGroup>
     <None Include="Migrations\0007_20180223-1305_Timothy-A.-Adekunle.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0008_20180226-1300_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrations\0009_20180226-1312_Timothy-A.-Adekunle.sql" />
+  </ItemGroup>
 </Project>
